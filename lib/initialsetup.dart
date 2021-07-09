@@ -13,12 +13,19 @@ class Setup extends StatefulWidget {
 
 class _SetupState extends State<Setup> {
   final controller = TextEditingController();
+  final controller1 = TextEditingController();
+  final controller2 = TextEditingController();
   var page1Visible = true;
   var page2Visible = false;
   var page3Visible = false;
+  var previousVis = false;
+  var nextVis = true;
+  var submitVis = false;
 
   void dipose() {
     controller.dispose();
+    controller1.dispose();
+    controller2.dispose();
     super.dispose();
   }
 
@@ -39,15 +46,24 @@ class _SetupState extends State<Setup> {
       page1Visible = true;
       page2Visible = false;
       page3Visible = false;
+      previousVis = false;
+      nextVis = true;
+      submitVis = false;
     }
     if (_currentStage == 1) {
       page1Visible = false;
       page2Visible = true;
       page3Visible = false;
+      previousVis = true;
+      nextVis = true;
+      submitVis = false;
     } else if (_currentStage == 2) {
       page1Visible = false;
       page2Visible = false;
       page3Visible = true;
+      previousVis = true;
+      nextVis = false;
+      submitVis = true;
     }
   }
 
@@ -60,14 +76,15 @@ class _SetupState extends State<Setup> {
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(
         fontFamily: 'Montserrat',
-        fontWeight: FontWeight.w500,
-        fontSize: 20,
+        fontWeight: FontWeight.w200,
+        fontSize: 18,
       ),
     );
     return MaterialApp(
       home: Scaffold(
         body: Stack(children: [
           Visibility(
+            // Page 1
             visible: page1Visible,
             child: Stack(
               children: [
@@ -132,22 +149,87 @@ class _SetupState extends State<Setup> {
               ],
             ),
           ),
-          Positioned(
-            bottom: 190,
-            left: 68,
+          Visibility(
+            // Page 2
+            visible: page2Visible,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  bottom: 510,
+                  child: Align(
+                    child: Container(
+                      width: 340,
+                      child: Text(
+                        'Enter a Friendly Name',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 25,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  bottom: 350,
+                  child: Align(
+                    child: Container(
+                      width: 340,
+                      child: Text(
+                        'Enter your friendly name in the text field given below. A friendly name is also known as a username or nickname.',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 19,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  bottom: 70,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 330,
+                      child: TextField(
+                        controller: controller1,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Enter your friendly name',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned.fill(
+            top: 300,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Visibility(
-                  visible: true,
+                  visible: previousVis,
                   child: Padding(
-                    padding: EdgeInsets.all(25),
+                    padding: EdgeInsets.all(35),
                     child: Align(
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         style: buttonStyle,
-                        child: Text('Next'),
+                        child: Text('Previous'),
                         onPressed: () {
                           _currentStage = _currentStage.ceil();
                           _updatePosition(max(--_currentStage, 0));
@@ -156,20 +238,43 @@ class _SetupState extends State<Setup> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(25),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      style: buttonStyle,
-                      child: Text('Next'),
-                      onPressed: () {
-                        _currentStage = _currentStage.ceil();
-                        _updatePosition(min(
-                          ++_currentStage,
-                          _stages.toInt(),
-                        ));
-                      },
+                Visibility(
+                  visible: nextVis,
+                  child: Padding(
+                    padding: EdgeInsets.all(35),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        style: buttonStyle,
+                        child: Text('Next'),
+                        onPressed: () {
+                          _currentStage = _currentStage.ceil();
+                          _updatePosition(min(
+                            ++_currentStage,
+                            _stages - 1,
+                          ));
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: submitVis,
+                  child: Padding(
+                    padding: EdgeInsets.all(35),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        style: buttonStyle,
+                        child: Text('Submit'),
+                        onPressed: () {
+                          _currentStage = _currentStage.ceil();
+                          _updatePosition(min(
+                            ++_currentStage,
+                            _stages - 1,
+                          ));
+                        },
+                      ),
                     ),
                   ),
                 ),
