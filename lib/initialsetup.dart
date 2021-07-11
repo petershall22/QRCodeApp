@@ -12,20 +12,23 @@ class Setup extends StatefulWidget {
 }
 
 class _SetupState extends State<Setup> {
+  // Variables
   final controller = TextEditingController();
   final controller1 = TextEditingController();
-  final controller2 = TextEditingController();
-  var page1Visible = true;
-  var page2Visible = false;
-  var page3Visible = false;
-  var previousVis = false;
-  var nextVis = true;
-  var submitVis = false;
+  var isChecked = false;
+  var _page1Visible = true;
+  var _page2Visible = false;
+  var _page3Visible = false;
+  var _previousVis = false;
+  var _nextVis = true;
+  var _submitVis = false;
+  bool _validate = false;
+  bool _validate1 = false;
+  // ..
 
   void dipose() {
     controller.dispose();
     controller1.dispose();
-    controller2.dispose();
     super.dispose();
   }
 
@@ -43,33 +46,44 @@ class _SetupState extends State<Setup> {
   void _updatePosition(int position) {
     setState(() => _currentStage = _validPosition(position));
     if (_currentStage == 0) {
-      page1Visible = true;
-      page2Visible = false;
-      page3Visible = false;
-      previousVis = false;
-      nextVis = true;
-      submitVis = false;
+      _page1Visible = true;
+      _page2Visible = false;
+      _page3Visible = false;
+      _previousVis = false;
+      _nextVis = true;
+      _submitVis = false;
     }
     if (_currentStage == 1) {
-      page1Visible = false;
-      page2Visible = true;
-      page3Visible = false;
-      previousVis = true;
-      nextVis = true;
-      submitVis = false;
+      _page1Visible = false;
+      _page2Visible = true;
+      _page3Visible = false;
+      _previousVis = true;
+      _nextVis = true;
+      _submitVis = false;
     } else if (_currentStage == 2) {
-      page1Visible = false;
-      page2Visible = false;
-      page3Visible = true;
-      previousVis = true;
-      nextVis = false;
-      submitVis = true;
+      _page1Visible = false;
+      _page2Visible = false;
+      _page3Visible = true;
+      _previousVis = true;
+      _nextVis = false;
+      _submitVis = true;
     }
   }
 
   String currentPagePresentable() {
     return ((_currentStage + 1).ceil()).toString();
   }
+
+  checkIfEmpty(object) {
+    if (object.isEmpty) {
+      print('empty');
+      return 'Field cannot be empty!';
+    } else {
+      return null;
+    }
+  }
+
+  // ..
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +99,7 @@ class _SetupState extends State<Setup> {
         body: Stack(children: [
           Visibility(
             // Page 1
-            visible: page1Visible,
+            visible: _page1Visible,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -130,10 +144,12 @@ class _SetupState extends State<Setup> {
                     alignment: Alignment.center,
                     child: Container(
                       width: 330,
-                      child: TextField(
+                      child: TextFormField(
                         controller: controller,
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
+                          errorText:
+                              _validate ? 'Field cannot be empty!' : null,
                           border: UnderlineInputBorder(),
                           labelText: 'Enter your ID code',
                           labelStyle: TextStyle(
@@ -151,7 +167,7 @@ class _SetupState extends State<Setup> {
           ),
           Visibility(
             // Page 2
-            visible: page2Visible,
+            visible: _page2Visible,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -196,10 +212,12 @@ class _SetupState extends State<Setup> {
                     alignment: Alignment.center,
                     child: Container(
                       width: 330,
-                      child: TextField(
+                      child: TextFormField(
                         controller: controller1,
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
+                          errorText:
+                              _validate1 ? 'Field cannot be empty!' : null,
                           border: UnderlineInputBorder(),
                           labelText: 'Enter your friendly name',
                           labelStyle: TextStyle(
@@ -215,14 +233,93 @@ class _SetupState extends State<Setup> {
               ],
             ),
           ),
+          Visibility(
+            // Page 3
+            visible: _page3Visible,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  bottom: 530,
+                  child: Align(
+                    child: Container(
+                      width: 340,
+                      child: Text(
+                        'Finalising your Setup',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 25,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  bottom: 240,
+                  child: Align(
+                    child: Container(
+                      width: 340,
+                      child: Text(
+                        'Go back and make sure that everything has the correct information in it.\n If you are not connected to the internet, you will recieve an error as your phone needs to contact the server.\n It is recommended that you always stay connected to the internet when using this application to display correct information about doors — however, it is not neeeded.',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  top: 80,
+                  child: Align(
+                    child: Container(
+                      width: 340,
+                      child: Text(
+                        'Press the checkbox below to affirm that you have read the above.',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  top: 170,
+                  child: Align(
+                    child: Container(
+                      width: 340,
+                      child: Checkbox(
+                        value: isChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isChecked = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Positioned.fill(
-            top: 300,
+            top: 330,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Visibility(
-                  visible: previousVis,
+                  visible: _previousVis,
                   child: Padding(
                     padding: EdgeInsets.all(35),
                     child: Align(
@@ -239,7 +336,7 @@ class _SetupState extends State<Setup> {
                   ),
                 ),
                 Visibility(
-                  visible: nextVis,
+                  visible: _nextVis,
                   child: Padding(
                     padding: EdgeInsets.all(35),
                     child: Align(
@@ -248,31 +345,59 @@ class _SetupState extends State<Setup> {
                         style: buttonStyle,
                         child: Text('Next'),
                         onPressed: () {
-                          _currentStage = _currentStage.ceil();
-                          _updatePosition(min(
-                            ++_currentStage,
-                            _stages - 1,
-                          ));
+                          if (_page2Visible) {
+                            if (controller1.text.isNotEmpty) {
+                              setState(() {
+                                _validate1 = false;
+                              });
+                              _currentStage = _currentStage.ceil();
+                              _updatePosition(min(
+                                ++_currentStage,
+                                _stages - 1,
+                              ));
+                            } else {
+                              setState(() {
+                                _validate1 = true;
+                              });
+                              print(_validate);
+                            }
+                          }
+                          if (_page1Visible) {
+                            if (controller.text.isNotEmpty) {
+                              setState(() {
+                                _validate = false;
+                              });
+                              _currentStage = _currentStage.ceil();
+                              print('a');
+                              _updatePosition(min(
+                                ++_currentStage,
+                                _stages - 1,
+                              ));
+                            } else {
+                              setState(() {
+                                _validate = true;
+                              });
+                              print(_validate);
+                            }
+                          }
                         },
                       ),
                     ),
                   ),
                 ),
                 Visibility(
-                  visible: submitVis,
+                  visible: _submitVis,
                   child: Padding(
                     padding: EdgeInsets.all(35),
                     child: Align(
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         style: buttonStyle,
-                        child: Text('Submit'),
+                        child: Text('Finish'),
                         onPressed: () {
-                          _currentStage = _currentStage.ceil();
-                          _updatePosition(min(
-                            ++_currentStage,
-                            _stages - 1,
-                          ));
+                          if (isChecked) {
+                            print('Submit');
+                          }
                         },
                       ),
                     ),
