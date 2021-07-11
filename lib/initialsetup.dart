@@ -1,5 +1,6 @@
 // package imports
 import 'package:flutter/material.dart';
+import 'package:qrcodeapp/homescreen.dart';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -394,9 +395,18 @@ class _SetupState extends State<Setup> {
                       child: ElevatedButton(
                         style: buttonStyle,
                         child: Text('Finish'),
-                        onPressed: () {
+                        onPressed: () async {
                           if (isChecked) {
                             print('Submit');
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool('introductionScreenDone', false);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    HomeScreen(), // push to Setup widget after introductionScreen done button pressed
+                              ),
+                            );
                           }
                         },
                       ),

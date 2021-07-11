@@ -62,8 +62,6 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   void _onDonePressed(context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('introductionScreenDone', false);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) =>
