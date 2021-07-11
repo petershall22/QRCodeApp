@@ -262,7 +262,7 @@ class _SetupState extends State<Setup> {
                     child: Container(
                       width: 340,
                       child: Text(
-                        'Go back and make sure that everything has the correct information in it.\n If you are not connected to the internet, you will recieve an error as your phone needs to contact the server.\n It is recommended that you always stay connected to the internet when using this application to display correct information about doors — however, it is not neeeded.',
+                        'Go back and make sure that everything has the correct information in it.\n If you are not connected to the internet, you will recieve an error as your phone needs to contact the server.\n\n It is recommended that you always stay connected to the internet when using this application to display correct information about doors — however, it is not neeeded.',
                         style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w500,
